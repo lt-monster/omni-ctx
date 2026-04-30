@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OmniCtx - Web Component Context Menu Demo</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f5f5f5;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .demo-area {
+      width: 600px;
+      height: 400px;
+      background: #fff;
+      border: 2px dashed #ccc;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #999;
+      font-size: 18px;
+      user-select: none;
+    }
+    .output {
+      margin-top: 20px;
+      text-align: center;
+      color: #333;
+      font-size: 14px;
+    }
+
+    /* Dark theme demo */
+    .dark-demo {
+      margin-left: 40px;
+      padding: 20px;
+      background: #1a1a1a;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div style="text-align: center;">
+    <div style="display: flex; gap: 40px; align-items: flex-start;">
+      <div>
+        <h3 style="margin-bottom: 10px; color:#666;">Light Theme</h3>
+        <div id="target" class="demo-area">Right-click here</div>
+      </div>
+      <div>
+        <h3 style="margin-bottom: 10px; color:#aaa;">Dark Theme</h3>
+        <div id="target-dark" class="demo-area dark-demo">Right-click here</div>
+      </div>
+    </div>
+    <div id="output" class="output"></div>
+  </div>
+
+  <context-menu id="main-menu" style-type="google" theme="light" size="normal">
+    <div slot="header" style="padding:8px 12px;font-size:12px;color:#888;border-bottom:1px solid #eee;">File Operations</div>
+
+    <context-menu-item label="Open" icon="📂" shortcut="Ctrl+O"></context-menu-item>
+    <context-menu-item label="Save" icon="💾" shortcut="Ctrl+S"></context-menu-item>
+
+    <context-menu-separator></context-menu-separator>
+
+    <context-menu-item label="Share" icon="📤">
+      <context-menu>
+        <context-menu-item label="Copy Link" shortcut="Ctrl+C"></context-menu-item>
+        <context-menu-item label="Send Email"></context-menu-item>
+        <context-menu-item label="Twitter"></context-menu-item>
+      </context-menu>
+    </context-menu-item>
+
+    <context-menu-separator></context-menu-separator>
+
+    <context-menu-group label="View Mode">
+      <context-menu-radio-group name="view-mode" value="list">
+        <context-menu-radio-item label="List View" value="list"></context-menu-radio-item>
+        <context-menu-radio-item label="Grid View" value="grid"></context-menu-radio-item>
+        <context-menu-radio-item label="Detail View" value="detail" disabled></context-menu-radio-item>
+      </context-menu-radio-group>
+    </context-menu-group>
+
+    <context-menu-separator></context-menu-separator>
+
+    <context-menu-toggle-item label="Auto Save" checked></context-menu-toggle-item>
+    <context-menu-toggle-item label="Show Hidden Files"></context-menu-toggle-item>
+
+    <context-menu-separator></context-menu-separator>
+
+    <context-menu-item label="Rename" icon="✏️" shortcut="F2"></context-menu-item>
+    <context-menu-item label="Delete" icon="🗑️" shortcut="Del" disabled></context-menu-item>
+
+    <div slot="footer" style="padding:4px 12px;font-size:11px;color:#aaa;border-top:1px solid #eee;">v0.1.0</div>
+  </context-menu>
+
+  <context-menu id="dark-menu" style-type="edge" theme="dark-element" size="normal">
+    <context-menu-item label="New File" icon="📄"></context-menu-item>
+    <context-menu-item label="New Folder" icon="📁"></context-menu-item>
+    <context-menu-separator></context-menu-separator>
+    <context-menu-item label="Settings" icon="⚙️">
+      <context-menu>
+        <context-menu-item label="Preferences"></context-menu-item>
+        <context-menu-item label="Extensions"></context-menu-item>
+      </context-menu>
+    </context-menu-item>
+    <context-menu-separator></context-menu-separator>
+    <context-menu-toggle-item label="Compact Mode"></context-menu-toggle-item>
+  </context-menu>
+
+  <script type="module">
+    import './src/index.ts';
+
+    const output = document.getElementById('output');
+
+    function setupMenu(menuId, targetId) {
+      const menu = document.getElementById(menuId);
+      const target = document.getElementById(targetId);
+
+      target.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        menu.open(e, { targetId });
+      });
+
+      menu.addEventListener('menu-select', (e) => {
+        output.textContent = `Selected: ${e.detail.label}`;
+      });
+
+      menu.addEventListener('before-close', (e) => {
+        console.log('before-close:', e.detail.reason);
+      });
+    }
+
+    setupMenu('main-menu', 'target');
+    setupMenu('dark-menu', 'target-dark');
+
+    const radioGroup = document.querySelector('context-menu-radio-group');
+    if (radioGroup) {
+      radioGroup.addEventListener('change', (e) => {
+        console.log('Radio changed:', e.detail);
+      });
+    }
+
+    document.addEventListener('toggle-change', (e) => {
+      console.log('Toggle changed:', e.detail);
+    });
+  </script>
+</body>
+</html>
