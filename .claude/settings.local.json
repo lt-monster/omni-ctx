@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s http://localhost:3000/src/index.ts)",
+      "Bash(curl:*)",
+      "Bash(taskkill //F //IM bun.exe)",
+      "Bash(bun test *)",
+      "Bash(git add *)",
+      "Bash(git commit *)"
+    ]
+  }
+}
