@@ -10,6 +10,7 @@ TEMPLATE.innerHTML = `
     <span class="ctx-menu-item__shortcut" part="shortcut"></span>
     <span class="ctx-menu-item__arrow" part="arrow"></span>
   </div>
+  <slot></slot>
 `;
 
 export class ContextMenuItem extends HTMLElement {
@@ -153,7 +154,13 @@ export class ContextMenuItem extends HTMLElement {
   private _showSubmenu(): void {
     if (!this._submenu) return;
     const rect = this.getBoundingClientRect();
-    (this._submenu as any).show(rect.right, rect.top);
+    const parentMenu = this.closest('context-menu') as HTMLElement & { menuDirection?: 'right' | 'left' } & { showSubmenu?: Function };
+    const preferredDirection = parentMenu?.menuDirection || 'right';
+    (this._submenu as any).showSubmenu(
+      { top: rect.top, left: rect.left, width: rect.width, height: rect.height },
+      preferredDirection,
+      parentMenu,
+    );
   }
 
   private _hideSubmenu(): void {
@@ -199,7 +206,6 @@ export class ContextMenuItem extends HTMLElement {
     if (this.disabled) {
       inner.classList.add('ctx-menu-item--disabled');
       this.setAttribute('aria-disabled', 'true');
-      this.setAttribute('disabled', '');
     } else {
       inner.classList.remove('ctx-menu-item--disabled');
       this.removeAttribute('aria-disabled');

@@ -8,57 +8,139 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #f5f5f5;
+      background: linear-gradient(135deg, #eef2ff 0%, #f8fafc 45%, #111827 45%, #0f172a 100%);
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
+      padding: 32px;
     }
-    .demo-area {
-      width: 600px;
-      height: 400px;
-      background: #fff;
-      border: 2px dashed #ccc;
-      border-radius: 12px;
-      display: flex;
+    .demo-shell {
+      text-align: center;
+    }
+    .target-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(260px, 320px));
+      gap: 34px;
       align-items: center;
       justify-content: center;
-      color: #999;
-      font-size: 18px;
+    }
+    .demo-area {
+      height: 210px;
+      display: grid;
+      place-items: center;
+      text-align: center;
       user-select: none;
+      transition: transform 140ms ease, box-shadow 140ms ease;
+    }
+    .demo-area:hover {
+      transform: translateY(-2px);
+    }
+    .target-title {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 24px;
+      font-weight: 700;
+    }
+    .target-hint {
+      display: block;
+      font-size: 15px;
+    }
+    .google-light-target {
+      background: #fff;
+      border: 1px solid #e8eaed;
+      border-radius: 26px;
+      color: #202124;
+      box-shadow: 0 18px 44px rgba(60, 64, 67, 0.2);
+      font-family: Arial, sans-serif;
+    }
+    .google-light-target .target-hint {
+      color: #5f6368;
+    }
+    .edge-light-target {
+      background: #f9fbff;
+      border: 1px solid #cfe8ff;
+      border-radius: 14px;
+      color: #1f2937;
+      box-shadow: 0 16px 38px rgba(0, 120, 212, 0.18);
+      font-family: 'Segoe UI', Arial, sans-serif;
+    }
+    .edge-light-target .target-title {
+      color: #0078d4;
+    }
+    .edge-light-target .target-hint {
+      color: #4b5563;
+    }
+    .google-dark-target {
+      background: #202124;
+      border: 1px solid #3c4043;
+      border-radius: 26px;
+      color: #f8fafd;
+      box-shadow: 0 20px 48px rgba(0, 0, 0, 0.42);
+      font-family: Arial, sans-serif;
+    }
+    .google-dark-target .target-hint {
+      color: #bdc1c6;
+    }
+    .edge-dark-target {
+      background: #111827;
+      border: 1px solid #2563eb;
+      border-radius: 14px;
+      color: #f9fafb;
+      box-shadow: 0 20px 48px rgba(0, 0, 0, 0.46);
+      font-family: 'Segoe UI', Arial, sans-serif;
+    }
+    .edge-dark-target .target-title {
+      color: #60a5fa;
+    }
+    .edge-dark-target .target-hint {
+      color: #cbd5e1;
     }
     .output {
-      margin-top: 20px;
+      margin-top: 24px;
       text-align: center;
-      color: #333;
+      color: #cbd5e1;
       font-size: 14px;
     }
-
-    /* Dark theme demo */
-    .dark-demo {
-      margin-left: 40px;
-      padding: 20px;
-      background: #1a1a1a;
-      border-radius: 8px;
+    @media (max-width: 720px) {
+      .target-grid {
+        grid-template-columns: minmax(260px, 1fr);
+      }
     }
   </style>
 </head>
 <body>
-  <div style="text-align: center;">
-    <div style="display: flex; gap: 40px; align-items: flex-start;">
-      <div>
-        <h3 style="margin-bottom: 10px; color:#666;">Light Theme</h3>
-        <div id="target" class="demo-area">Right-click here</div>
+  <div class="demo-shell">
+    <div class="target-grid">
+      <div id="target-google-light" class="demo-area google-light-target">
+        <div>
+          <span class="target-title">Google Light</span>
+          <span class="target-hint">Right-click here</span>
+        </div>
       </div>
-      <div>
-        <h3 style="margin-bottom: 10px; color:#aaa;">Dark Theme</h3>
-        <div id="target-dark" class="demo-area dark-demo">Right-click here</div>
+      <div id="target-edge-light" class="demo-area edge-light-target">
+        <div>
+          <span class="target-title">Edge Light</span>
+          <span class="target-hint">Right-click here</span>
+        </div>
+      </div>
+      <div id="target-google-dark" class="demo-area google-dark-target">
+        <div>
+          <span class="target-title">Google Dark</span>
+          <span class="target-hint">Right-click here</span>
+        </div>
+      </div>
+      <div id="target-edge-dark" class="demo-area edge-dark-target">
+        <div>
+          <span class="target-title">Edge Dark</span>
+          <span class="target-hint">Right-click here</span>
+        </div>
       </div>
     </div>
     <div id="output" class="output"></div>
   </div>
 
-  <context-menu id="main-menu" style-type="google" theme="light" size="normal">
+  <context-menu id="google-light-menu" style-type="google" theme="light" size="normal" max-height="260">
     <div slot="header" style="padding:8px 12px;font-size:12px;color:#888;border-bottom:1px solid #eee;">File Operations</div>
 
     <context-menu-item label="Open" icon="📂" shortcut="Ctrl+O"></context-menu-item>
@@ -67,10 +149,72 @@
     <context-menu-separator></context-menu-separator>
 
     <context-menu-item label="Share" icon="📤">
-      <context-menu>
+      <context-menu no-inherit-height>
         <context-menu-item label="Copy Link" shortcut="Ctrl+C"></context-menu-item>
         <context-menu-item label="Send Email"></context-menu-item>
         <context-menu-item label="Twitter"></context-menu-item>
+        <context-menu-item label="WhatsApp"></context-menu-item>
+        <context-menu-item label="Telegram"></context-menu-item>
+        <context-menu-item label="Signal"></context-menu-item>
+        <context-menu-item label="Slack"></context-menu-item>
+        <context-menu-separator></context-menu-separator>
+        <context-menu-item label="More sharing options..."></context-menu-item>
+      </context-menu>
+    </context-menu-item>
+
+    <context-menu-item label="Recent Files" icon="📋">
+      <context-menu>
+        <context-menu-item label="project-overview.md" icon="📄"></context-menu-item>
+        <context-menu-item label="design-spec-v3.fig" icon="🖼️"></context-menu-item>
+        <context-menu-item label="budget-q2.xlsx" icon="📊"></context-menu-item>
+        <context-menu-item label="meeting-notes.txt" icon="📝"></context-menu-item>
+        <context-menu-separator></context-menu-separator>
+        <context-menu-item label="hero-banner.psd" icon="🎨"></context-menu-item>
+        <context-menu-item label="api-contract.yaml" icon="⚙️"></context-menu-item>
+        <context-menu-item label="unit-tests-result.html" icon="🧪"></context-menu-item>
+        <context-menu-item label="release-notes-draft.md" icon="📄"></context-menu-item>
+        <context-menu-separator></context-menu-separator>
+        <context-menu-item label="arch-diagram.png" icon="🗺️"></context-menu-item>
+        <context-menu-item label="onboarding-slides.pptx" icon="📽️"></context-menu-item>
+        <context-menu-item label="data-export.csv" icon="📊" disabled></context-menu-item>
+        <context-menu-item label="sprint-retro-notes.txt" icon="📝"></context-menu-item>
+      </context-menu>
+    </context-menu-item>
+
+    <context-menu-item label="Sort" icon="↕">
+      <context-menu>
+        <context-menu-option-item name="sort" value="asc" label="Ascending"></context-menu-option-item>
+        <context-menu-option-item name="sort" value="desc" label="Descending"></context-menu-option-item>
+        <context-menu-option-item name="sort" value="none" label="No Sort" checked></context-menu-option-item>
+      </context-menu>
+    </context-menu-item>
+
+    <context-menu-separator></context-menu-separator>
+
+    <context-menu-item label="5-Level Submenu Test" icon="T">
+      <context-menu>
+        <context-menu-item label="Level 1 - very wide item for measuring">
+          <context-menu>
+            <context-menu-item label="Level 2 - keep following direction">
+              <context-menu>
+                <context-menu-item label="Level 3 - still nested">
+                  <context-menu>
+                    <context-menu-item label="Level 4 - near edge check">
+                      <context-menu>
+                        <context-menu-item label="Level 5 - final action" icon="📤"></context-menu-item>
+                        <context-menu-item label="Level 5 - another action"></context-menu-item>
+                      </context-menu>
+                    </context-menu-item>
+                    <context-menu-item label="Level 4 - sibling"></context-menu-item>
+                  </context-menu>
+                </context-menu-item>
+                <context-menu-item label="Level 3 - sibling"></context-menu-item>
+              </context-menu>
+            </context-menu-item>
+            <context-menu-item label="Level 2 - sibling"></context-menu-item>
+          </context-menu>
+        </context-menu-item>
+        <context-menu-item label="Level 1 - sibling"></context-menu-item>
       </context-menu>
     </context-menu-item>
 
@@ -97,7 +241,49 @@
     <div slot="footer" style="padding:4px 12px;font-size:11px;color:#aaa;border-top:1px solid #eee;">v0.1.0</div>
   </context-menu>
 
-  <context-menu id="dark-menu" style-type="edge" theme="dark-element" size="normal">
+  <context-menu id="edge-light-menu" style-type="edge" theme="light" size="normal">
+    <context-menu-item label="New File" icon="📄"></context-menu-item>
+    <context-menu-item label="New Folder" icon="📁"></context-menu-item>
+    <context-menu-separator></context-menu-separator>
+    <context-menu-item label="Settings" icon="⚙️">
+      <context-menu>
+        <context-menu-item label="Preferences"></context-menu-item>
+        <context-menu-item label="Extensions"></context-menu-item>
+      </context-menu>
+    </context-menu-item>
+    <context-menu-separator></context-menu-separator>
+    <context-menu-toggle-item label="Compact Mode"></context-menu-toggle-item>
+  </context-menu>
+
+  <context-menu id="google-dark-menu" style-type="google" theme="dark-element" size="normal" max-height="260">
+    <context-menu-item label="Open" icon="📂" shortcut="Ctrl+O"></context-menu-item>
+    <context-menu-item label="Save" icon="💾" shortcut="Ctrl+S"></context-menu-item>
+    <context-menu-item label="Save As" icon="💾" shortcut="Ctrl+Shift+S"></context-menu-item>
+    <context-menu-separator></context-menu-separator>
+    <context-menu-item label="Share" icon="📤">
+      <context-menu max-height="100">
+        <context-menu-item label="Copy Link" shortcut="Ctrl+C"></context-menu-item>
+        <context-menu-item label="Send Email"></context-menu-item>
+        <context-menu-item label="Bluetooth"></context-menu-item>
+        <context-menu-item label="Nearby Share"></context-menu-item>
+        <context-menu-item label="QR Code"></context-menu-item>
+        <context-menu-item label="AirDrop"></context-menu-item>
+        <context-menu-separator></context-menu-separator>
+        <context-menu-item label="Copy to Clipboard"></context-menu-item>
+        <context-menu-item label="Save to Drive"></context-menu-item>
+        <context-menu-item label="More options..." disabled></context-menu-item>
+      </context-menu>
+    </context-menu-item>
+    <context-menu-separator></context-menu-separator>
+    <context-menu-item label="Rename" icon="✏️" shortcut="F2"></context-menu-item>
+    <context-menu-item label="Delete" icon="🗑️" shortcut="Del" disabled></context-menu-item>
+    <context-menu-separator></context-menu-separator>
+    <context-menu-item label="Properties" icon="⚙️" shortcut="Alt+Enter"></context-menu-item>
+    <context-menu-item label="Print" icon="🖨️" shortcut="Ctrl+P"></context-menu-item>
+    <context-menu-item label="Export" icon="📥" disabled></context-menu-item>
+  </context-menu>
+
+  <context-menu id="edge-dark-menu" style-type="edge" theme="dark-element" size="normal">
     <context-menu-item label="New File" icon="📄"></context-menu-item>
     <context-menu-item label="New Folder" icon="📁"></context-menu-item>
     <context-menu-separator></context-menu-separator>
@@ -112,7 +298,7 @@
   </context-menu>
 
   <script type="module">
-    import './src/index.ts';
+    import '../src/index.ts';
 
     const output = document.getElementById('output');
 
@@ -129,13 +315,19 @@
         output.textContent = `Selected: ${e.detail.label}`;
       });
 
+      menu.addEventListener('option-change', (e) => {
+        output.textContent = `Selected ${e.detail.name}: ${e.detail.label}`;
+      });
+
       menu.addEventListener('before-close', (e) => {
         console.log('before-close:', e.detail.reason);
       });
     }
 
-    setupMenu('main-menu', 'target');
-    setupMenu('dark-menu', 'target-dark');
+    setupMenu('google-light-menu', 'target-google-light');
+    setupMenu('edge-light-menu', 'target-edge-light');
+    setupMenu('google-dark-menu', 'target-google-dark');
+    setupMenu('edge-dark-menu', 'target-edge-dark');
 
     const radioGroup = document.querySelector('context-menu-radio-group');
     if (radioGroup) {

@@ -119,6 +119,7 @@ export class ContextMenu extends HTMLElement {
       this._menuEl.style.visibility = 'hidden';
       this._menuEl.classList.add('ctx-menu--visible');
     }
+    this._menuEl.scrollTop = 0;
     const pos = calculateMenuPosition(this._menuEl, x, y, window.innerWidth, window.innerHeight);
     this._menuEl.style.top = `${pos.top}px`;
     this._menuEl.style.left = `${pos.left}px`;
@@ -145,6 +146,7 @@ export class ContextMenu extends HTMLElement {
     if (parentMenu) {
       this._inheritParentHeight(parentMenu);
     }
+    this._menuEl.scrollTop = 0;
     const pos = calculateMenuPosition(this._menuEl, 0, 0, window.innerWidth, window.innerHeight, {
       direction: preferredDirection,
       parentRect,
@@ -319,6 +321,7 @@ export class ContextMenu extends HTMLElement {
 
   private _applyViewportMaxHeight(top: number): void {
     if (!this._menuEl) return;
+    if (this.hasAttribute('no-inherit-height')) return;
     if (this.hasAttribute('height') || this.hasAttribute('max-height')) return;
     if (this._menuEl.style.height || this._menuEl.style.maxHeight) return;
 

@@ -13,8 +13,8 @@
   },
   "files": ["dist"],
   "scripts": {
-    "dev": "bun run --hot examples/index.html",
-    "build": "bun build ./src/index.ts --outdir=./dist --format=esm --target=browser --splitting",
+    "dev": "bun run --hot dev-server.ts",
+    "build": "bun run scripts/build.ts",
     "test": "bun test",
     "test:watch": "bun test --watch"
   },

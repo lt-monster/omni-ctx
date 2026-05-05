@@ -21,13 +21,13 @@ export function calculateMenuPosition(
   let top: number;
 
   if (submenuCtx) {
+    const rightLeft = submenuCtx.parentRect.left + submenuCtx.parentRect.width;
+    const rightFits = rightLeft + menuWidth <= vpWidth;
+
     if (submenuCtx.direction === 'right') {
-      left = submenuCtx.parentRect.left + submenuCtx.parentRect.width;
-      if (left + menuWidth > vpWidth) {
-        left = submenuCtx.parentRect.left - menuWidth;
-      }
+      left = rightFits ? rightLeft : submenuCtx.parentRect.left - menuWidth;
     } else {
-      left = submenuCtx.parentRect.left - menuWidth;
+      left = rightFits ? rightLeft : submenuCtx.parentRect.left - menuWidth;
     }
     top = submenuCtx.parentRect.top;
     if (top + menuHeight > vpHeight) {

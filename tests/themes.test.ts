@@ -29,9 +29,35 @@ describe('Theme Engine', () => {
 
   it('should merge style, theme, and size together', () => {
     const vars = getThemeVariables('edge', 'dark-naive', 'small');
-    expect(vars['--ctx-menu-border-radius']).toBe('4px');
+    expect(vars['--ctx-menu-border-radius']).toBe('3px');
     expect(vars['--ctx-menu-font-size']).toBe('12px');
     expect(vars['--ctx-menu-text-color']).toBe('rgba(255,255,255,0.9)');
+  });
+
+  it('should make edge light menus look distinct from google light menus', () => {
+    const edge = getThemeVariables('edge', 'light', 'normal');
+    const google = getThemeVariables('google', 'light', 'normal');
+
+    expect(edge['--ctx-menu-bg']).toBe('#f9f9f9');
+    expect(edge['--ctx-menu-border-radius']).toBe('3px');
+    expect(edge['--ctx-menu-min-width']).toBe('208px');
+    expect(edge['--ctx-menu-item-hover-bg']).toBe('#eaeaea');
+    expect(edge['--ctx-menu-item-hover-text']).toBe('#1f1f1f');
+    expect(edge['--ctx-menu-item-shortcut-color']).toBe('#6b6b6b');
+    expect(edge['--ctx-menu-bg']).not.toBe(google['--ctx-menu-bg']);
+    expect(edge['--ctx-menu-item-hover-bg']).not.toBe(google['--ctx-menu-item-hover-bg']);
+  });
+
+  it('should make edge dark menus use browser-like neutral dark colors', () => {
+    const vars = getThemeVariables('edge', 'dark-element', 'normal');
+
+    expect(vars['--ctx-menu-bg']).toBe('#2b2b2b');
+    expect(vars['--ctx-menu-border']).toBe('1px solid #3a3a3a');
+    expect(vars['--ctx-menu-text-color']).toBe('#f3f3f3');
+    expect(vars['--ctx-menu-item-hover-bg']).toBe('#3b3b3b');
+    expect(vars['--ctx-menu-item-hover-text']).toBe('#f3f3f3');
+    expect(vars['--ctx-menu-separator-color']).toBe('#454545');
+    expect(vars['--ctx-menu-item-shortcut-color']).toBe('#b8b8b8');
   });
 });
 

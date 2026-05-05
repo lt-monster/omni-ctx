@@ -20,6 +20,14 @@ export const menuBaseStyles = `
     --_item-shortcut-color: var(--ctx-menu-item-shortcut-color, #999);
     --_item-shortcut-fz: var(--ctx-menu-item-shortcut-font-size, 12px);
 
+    --_max-height: var(--ctx-menu-max-height, none);
+    --_overflow-y: var(--ctx-menu-overflow-y, visible);
+
+    --_scrollbar-width: var(--ctx-menu-scrollbar-width, 5px);
+    --_scrollbar-track: var(--ctx-menu-scrollbar-track, transparent);
+    --_scrollbar-thumb: var(--ctx-menu-scrollbar-thumb, #c4c4c4);
+    --_scrollbar-thumb-hover: var(--ctx-menu-scrollbar-thumb-hover, #a0a0a0);
+
     --_sep-color: var(--ctx-menu-separator-color, #e8e8e8);
     --_sep-margin: var(--ctx-menu-separator-margin, 4px 8px);
 
@@ -32,6 +40,7 @@ export const menuBaseStyles = `
     z-index: var(--_z);
     min-width: var(--_min-width);
     max-width: var(--_max-width);
+    max-height: var(--_max-height);
     background: var(--_bg);
     border: var(--_border);
     border-radius: var(--_radius);
@@ -40,12 +49,29 @@ export const menuBaseStyles = `
     font-family: var(--_font);
     font-size: var(--_font-size);
     color: var(--_text);
-    overflow: hidden;
+    overflow-y: var(--_overflow-y);
     user-select: none;
   }
 
   .ctx-menu--visible {
     display: block;
+  }
+
+  .ctx-menu::-webkit-scrollbar {
+    width: var(--_scrollbar-width);
+  }
+
+  .ctx-menu::-webkit-scrollbar-track {
+    background: var(--_scrollbar-track);
+  }
+
+  .ctx-menu::-webkit-scrollbar-thumb {
+    background: var(--_scrollbar-thumb);
+    border-radius: 4px;
+  }
+
+  .ctx-menu::-webkit-scrollbar-thumb:hover {
+    background: var(--_scrollbar-thumb-hover);
   }
 `;
 

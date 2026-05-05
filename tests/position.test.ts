@@ -24,6 +24,12 @@ describe('calculateMenuPosition', () => {
     expect(result.left).toBe(1600);
   });
 
+  it('should align the right edge with mouse x when a wide menu flips left', () => {
+    const menu = mockElementSize(320, 150);
+    const result = calculateMenuPosition(menu, 900, 100, 1000, 800);
+    expect(result.left).toBe(580);
+  });
+
   it('should flip menu up when bottom edge overflows', () => {
     const menu = mockElementSize(200, 300);
     const result = calculateMenuPosition(menu, 100, 900, 1920, 1080);
@@ -55,6 +61,24 @@ describe('calculateMenuPosition', () => {
     const menu = mockElementSize(200, 150);
     const result = calculateMenuPosition(menu, 100, 200, 1920, 1080, { direction: 'right', parentRect: { top: 200, left: 1800, width: 150, height: 30 } });
     expect(result.left).toBe(1600);
+  });
+
+  it('should keep submenus opening left when the parent menu opened left and right side is still constrained', () => {
+    const menu = mockElementSize(240, 150);
+    const result = calculateMenuPosition(menu, 0, 0, 1000, 800, {
+      direction: 'left',
+      parentRect: { top: 120, left: 760, width: 220, height: 30 },
+    });
+    expect(result.left).toBe(520);
+  });
+
+  it('should open a submenu right when there is enough room on the right again', () => {
+    const menu = mockElementSize(240, 150);
+    const result = calculateMenuPosition(menu, 0, 0, 1000, 800, {
+      direction: 'left',
+      parentRect: { top: 120, left: 360, width: 220, height: 30 },
+    });
+    expect(result.left).toBe(580);
   });
 
   it('should handle submenu that would overflow right', () => {
