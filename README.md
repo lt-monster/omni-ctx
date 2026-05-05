@@ -62,40 +62,52 @@ bun install
 
 适用于不希望预先编写 `<context-menu>` 标签，而是在运行时根据坐标和菜单数据直接打开菜单的场景。
 
-```ts
-import { openContextMenu } from 'omni-ctx';
+#### ESM / 模块方式
 
-openContextMenu({
-  x: 120,
-  y: 200,
-  items: [
-    { label: '打开', handler: () => console.log('open') },
-    { type: 'separator' },
-    { label: '删除', handler: () => console.log('delete') },
-  ],
-});
+```html
+<script type="module">
+  import { openContextMenu } from './dist/omni-ctx.js';
+
+  document.addEventListener('contextmenu', (event) => {
+    event.preventDefault();
+
+    openContextMenu({
+      x: event.clientX,
+      y: event.clientY,
+      items: [
+        { label: '打开' },
+        { label: '删除' },
+      ],
+    });
+  });
+</script>
 ```
 
-如果菜单需要复用，可以配合 `cacheKey`：
+#### 普通 `script` 方式
 
-```ts
-const handle = openContextMenu({
-  cacheKey: 'file-menu',
-  x: 120,
-  y: 200,
-  items: [
-    { label: '打开' },
-    { label: '重命名' },
-    { label: '删除' },
-  ],
-});
+```html
+<script src="./dist/omni-ctx.global.js"></script>
+<script>
+  document.addEventListener('contextmenu', function (event) {
+    event.preventDefault();
 
-handle.close();
-// handle.destroy();
+    OmniCtx.openContextMenu({
+      x: event.clientX,
+      y: event.clientY,
+      items: [
+        { label: '打开' },
+        { label: '删除' },
+      ],
+    });
+  });
+</script>
 ```
 
 补充说明：
 
+- 模块方式使用包名 `omni-ctx` 或对应的 ESM 构建文件
+- 普通 `script` 方式通过全局对象 `OmniCtx` 访问运行时 API
+- 如果只使用声明式标签，加载全局构建后也可以在普通 `script` 中直接操作菜单实例
 - 不传 `cacheKey` 时，菜单会按一次性实例创建并在关闭后移除
 - 传入 `cacheKey` 时，可复用同一个运行时菜单实例，适合高频触发场景
 

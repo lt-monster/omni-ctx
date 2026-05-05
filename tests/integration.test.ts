@@ -131,6 +131,22 @@ describe('ContextMenu function API exports', () => {
   });
 });
 
+describe('Build declaration sync', () => {
+  it('build script declaration template includes runtime function API and updated open signature', () => {
+    const src = require('node:fs').readFileSync(
+      new URL('../scripts/build.ts', import.meta.url),
+      'utf8'
+    );
+
+    expect(src).toContain('export interface OpenContextMenuOptions');
+    expect(src).toContain('export interface ContextMenuHandle');
+    expect(src).toContain('export interface MenuOpenConfig');
+    expect(src).toContain('export type MenuOpenInput');
+    expect(src).toContain('open(event: MouseEvent | { x: number; y: number }, input?: MenuOpenInput): void;');
+    expect(src).toContain('export declare function openContextMenu(');
+  });
+});
+
 describe('Theme Engine', () => {
   it('should export getThemeVariables and applyTheme', async () => {
     const mod = await import('../src/themes');

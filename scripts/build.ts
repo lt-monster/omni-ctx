@@ -7,27 +7,40 @@ const distDir = resolve(root, 'dist');
 await rm(distDir, { recursive: true, force: true });
 await mkdir(distDir, { recursive: true });
 
-const result = await Bun.build({
+const esmResult = await Bun.build({
   entrypoints: [resolve(root, 'src/index.ts')],
   target: 'browser',
   format: 'esm',
   minify: true,
 });
 
-if (!result.success) {
-  for (const log of result.logs) {
-    console.error(log);
-  }
+const globalResult = await Bun.build({
+  entrypoints: [resolve(root, 'src/global.ts')],
+  target: 'browser',
+  format: 'iife',
+  minify: true,
+});
+
+if (!esmResult.success) {
+  for (const log of esmResult.logs) console.error(log);
   process.exit(1);
 }
 
-const output = result.outputs[0];
-if (!output) {
-  console.error('Build succeeded without emitting an output file.');
+if (!globalResult.success) {
+  for (const log of globalResult.logs) console.error(log);
   process.exit(1);
 }
 
-await writeFile(resolve(distDir, 'omni-ctx.js'), await output.text());
+const esmOutput = esmResult.outputs[0];
+const globalOutput = globalResult.outputs[0];
+
+if (!esmOutput || !globalOutput) {
+  console.error('Build succeeded without emitting all expected output files.');
+  process.exit(1);
+}
+
+await writeFile(resolve(distDir, 'omni-ctx.js'), await esmOutput.text());
+await writeFile(resolve(distDir, 'omni-ctx.global.js'), await globalOutput.text());
 
 await writeFile(
   resolve(distDir, 'index.d.ts'),
@@ -64,6 +77,28 @@ export interface MenuItemData {
   onChange?: (value: string | boolean, param?: MenuParam) => void;
   children?: MenuItemData[];
   type?: 'menu' | 'radio' | 'toggle' | 'separator' | 'option';
+}
+
+export interface MenuOpenConfig {
+  items: MenuItemData[];
+  param?: MenuParam;
+  replace?: boolean;
+}
+
+export type MenuOpenInput = MenuParam | MenuItemData[] | MenuOpenConfig;
+
+export interface OpenContextMenuOptions {
+  x: number;
+  y: number;
+  items: MenuItemData[];
+  param?: MenuParam;
+  cacheKey?: string;
+}
+
+export interface ContextMenuHandle {
+  element: ContextMenuElement;
+  close(): void;
+  destroy(): void;
 }
 
 export interface MenuSelectEventDetail {
@@ -125,7 +160,7 @@ export interface ContextMenuElement extends HTMLElement {
     parentRect: { top: number; left: number; width: number; height: number },
     preferredDirection?: Extract<MenuDirection, 'right' | 'left'>,
   ): void;
-  open(event: MouseEvent | { x: number; y: number }, param?: MenuParam): void;
+  open(event: MouseEvent | { x: number; y: number }, input?: MenuOpenInput): void;
   hide(): void;
   close(): void;
   focusFirstItem(): void;
@@ -158,7 +193,7 @@ export interface ContextMenuOptionItemElement extends HTMLElement {
 }
 
 export declare class ContextMenu extends HTMLElement implements ContextMenuElement {
-  open(event: MouseEvent | { x: number; y: number }, param?: MenuParam): void;
+  open(event: MouseEvent | { x: number; y: number }, input?: MenuOpenInput): void;
   show(x: number, y: number, param?: MenuParam): void;
   showSubmenu(
     parentRect: { top: number; left: number; width: number; height: number },
@@ -216,6 +251,8 @@ export declare class ContextMenuOptionItem extends HTMLElement implements Contex
   disabled: boolean;
 }
 
+export declare function openContextMenu(options: OpenContextMenuOptions): ContextMenuHandle;
+
 export declare function calculateMenuPosition(
   menu: HTMLElement,
   mouseX: number,
@@ -249,4 +286,4 @@ export declare function applyTheme(
 `,
 );
 
-console.log('Built dist/omni-ctx.js with minification enabled.');
+console.log('Built dist/omni-ctx.js and dist/omni-ctx.global.js with minification enabled.');
