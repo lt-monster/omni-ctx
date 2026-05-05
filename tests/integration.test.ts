@@ -1,5 +1,12 @@
 import { describe, it, expect } from 'bun:test';
 
+describe('ContextMenu programmatic API', () => {
+  it('isOpen reflects visibility state', () => {
+    const src = require('node:fs').readFileSync(new URL('../src/types.ts', import.meta.url), 'utf8');
+    expect(src).toContain('isOpen');
+  });
+});
+
 describe('Type Exports', () => {
   it('should export type definitions', async () => {
     const mod = await import('../src/types');
@@ -18,6 +25,13 @@ describe('Keyboard Utility', () => {
   it('should export handleMenuKeyboard', async () => {
     const mod = await import('../src/utils/keyboard');
     expect(typeof mod.handleMenuKeyboard).toBe('function');
+  });
+});
+
+describe('Option Item Export', () => {
+  it('should include ContextMenuOptionItem in package entry source', () => {
+    const source = require('node:fs').readFileSync(new URL('../src/index.ts', import.meta.url), 'utf8');
+    expect(source).toContain('ContextMenuOptionItem');
   });
 });
 

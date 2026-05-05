@@ -19,6 +19,7 @@ export type ExpandTrigger = 'hover' | 'click';
 
 export interface MenuItemData {
   id?: string;
+  name?: string;
   label: string | ((param?: MenuParam) => string);
   icon?: string;
   shortcut?: string;
@@ -29,7 +30,7 @@ export interface MenuItemData {
   handler?: (param?: MenuParam) => void;
   onChange?: (value: string | boolean, param?: MenuParam) => void;
   children?: MenuItemData[];
-  type?: 'menu' | 'radio' | 'toggle' | 'separator';
+  type?: 'menu' | 'radio' | 'toggle' | 'separator' | 'option';
 }
 
 export interface MenuSelectEventDetail {
@@ -52,6 +53,13 @@ export interface RadioChangeEventDetail {
 export interface ToggleChangeEventDetail {
   label: string;
   checked: boolean;
+}
+
+export interface OptionChangeEventDetail {
+  name: string;
+  value: string;
+  label: string;
+  item: HTMLElement;
 }
 
 export interface MenuGroupData {
@@ -80,6 +88,10 @@ export interface ContextMenuItemElement extends HTMLElement {
 
 export interface ContextMenuElement extends HTMLElement {
   show(x: number, y: number, param?: MenuParam): void;
+  showSubmenu(
+    parentRect: { top: number; left: number; width: number; height: number },
+    preferredDirection?: Extract<MenuDirection, 'right' | 'left'>,
+  ): void;
   open(event: MouseEvent | { x: number; y: number }, param?: MenuParam): void;
   hide(): void;
   close(): void;
@@ -88,6 +100,8 @@ export interface ContextMenuElement extends HTMLElement {
   addSeparator(): void;
   getMenuOption(id: string): MenuItemData | null;
   menuParam: MenuParam | null;
+  menuDirection: Extract<MenuDirection, 'right' | 'left'>;
+  isOpen: boolean;
 }
 
 export interface ContextMenuRadioGroupElement extends HTMLElement {
@@ -98,6 +112,14 @@ export interface ContextMenuRadioGroupElement extends HTMLElement {
 }
 
 export interface ContextMenuToggleItemElement extends HTMLElement {
+  label: string;
+  checked: boolean;
+  disabled: boolean;
+}
+
+export interface ContextMenuOptionItemElement extends HTMLElement {
+  name: string;
+  value: string;
   label: string;
   checked: boolean;
   disabled: boolean;
