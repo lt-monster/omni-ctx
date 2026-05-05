@@ -24,4 +24,26 @@ describe('openContextMenu runtime source', () => {
     expect(source).toContain('close: () =>');
     expect(source).toContain('destroy: () =>');
   });
+
+  it('creates and reuses runtime menus through helper functions', () => {
+    const source = readFileSync(runtimePath, 'utf8');
+    expect(source).toContain('function createRuntimeContextMenu()');
+    expect(source).toContain('function getOrCreateRuntimeContextMenu(cacheKey?: string)');
+    expect(source).toContain('runtimeMenuCache.get(cacheKey)');
+    expect(source).toContain('runtimeMenuCache.set(cacheKey, menu)');
+  });
+
+  it('keeps cached menus and removes one-off menus on hide', () => {
+    const source = readFileSync(runtimePath, 'utf8');
+    expect(source).toContain('const originalHide = menu.hide.bind(menu)');
+    expect(source).toContain('menu.hide = () => {');
+    expect(source).toContain('if (!cacheKey) {');
+    expect(source).toContain('menu.remove();');
+  });
+
+  it('destroys cached menus explicitly', () => {
+    const source = readFileSync(runtimePath, 'utf8');
+    expect(source).toContain('runtimeMenuCache.delete(cacheKey)');
+    expect(source).toContain('destroyRuntimeContextMenu(menu, cacheKey)');
+  });
 });
