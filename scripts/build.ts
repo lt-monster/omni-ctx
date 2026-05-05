@@ -7,40 +7,55 @@ const distDir = resolve(root, 'dist');
 await rm(distDir, { recursive: true, force: true });
 await mkdir(distDir, { recursive: true });
 
-const esmResult = await Bun.build({
+const esmDebugResult = await Bun.build({
+  entrypoints: [resolve(root, 'src/index.ts')],
+  target: 'browser',
+  format: 'esm',
+  minify: false,
+});
+
+const esmMinResult = await Bun.build({
   entrypoints: [resolve(root, 'src/index.ts')],
   target: 'browser',
   format: 'esm',
   minify: true,
 });
 
-const globalResult = await Bun.build({
+const globalDebugResult = await Bun.build({
+  entrypoints: [resolve(root, 'src/global.ts')],
+  target: 'browser',
+  format: 'iife',
+  minify: false,
+});
+
+const globalMinResult = await Bun.build({
   entrypoints: [resolve(root, 'src/global.ts')],
   target: 'browser',
   format: 'iife',
   minify: true,
 });
 
-if (!esmResult.success) {
-  for (const log of esmResult.logs) console.error(log);
-  process.exit(1);
+for (const result of [esmDebugResult, esmMinResult, globalDebugResult, globalMinResult]) {
+  if (!result.success) {
+    for (const log of result.logs) console.error(log);
+    process.exit(1);
+  }
 }
 
-if (!globalResult.success) {
-  for (const log of globalResult.logs) console.error(log);
-  process.exit(1);
-}
+const esmDebugOutput = esmDebugResult.outputs[0];
+const esmMinOutput = esmMinResult.outputs[0];
+const globalDebugOutput = globalDebugResult.outputs[0];
+const globalMinOutput = globalMinResult.outputs[0];
 
-const esmOutput = esmResult.outputs[0];
-const globalOutput = globalResult.outputs[0];
-
-if (!esmOutput || !globalOutput) {
+if (!esmDebugOutput || !esmMinOutput || !globalDebugOutput || !globalMinOutput) {
   console.error('Build succeeded without emitting all expected output files.');
   process.exit(1);
 }
 
-await writeFile(resolve(distDir, 'omni-ctx.js'), await esmOutput.text());
-await writeFile(resolve(distDir, 'omni-ctx.global.js'), await globalOutput.text());
+await writeFile(resolve(distDir, 'omni-ctx.js'), await esmDebugOutput.text());
+await writeFile(resolve(distDir, 'omni-ctx.min.js'), await esmMinOutput.text());
+await writeFile(resolve(distDir, 'omni-ctx.global.js'), await globalDebugOutput.text());
+await writeFile(resolve(distDir, 'omni-ctx.global.min.js'), await globalMinOutput.text());
 
 await writeFile(
   resolve(distDir, 'index.d.ts'),
@@ -286,4 +301,4 @@ export declare function applyTheme(
 `,
 );
 
-console.log('Built dist/omni-ctx.js and dist/omni-ctx.global.js with minification enabled.');
+console.log('Built dist/omni-ctx.js, dist/omni-ctx.min.js, dist/omni-ctx.global.js, and dist/omni-ctx.global.min.js.');
