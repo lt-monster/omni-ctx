@@ -1,8 +1,20 @@
-# OmniCtx
+<p align="center">
+  <img src="./assets/logo/omni-ctx-logo.svg" alt="OmniCtx logo" width="140" />
+</p>
 
-[![npm version](https://img.shields.io/npm/v/omni-ctx)](https://www.npmjs.com/package/omni-ctx)
-[![license](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
-[![runtime](https://img.shields.io/badge/runtime-Web%20Components-orange.svg)](https://developer.mozilla.org/en-US/docs/Web/API/Web_components)
+<h1 align="center">OmniCtx</h1>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/omni-ctx">
+    <img alt="npm version" src="https://img.shields.io/npm/v/omni-ctx" />
+  </a>
+  <a href="./LICENSE">
+    <img alt="license" src="https://img.shields.io/badge/license-MIT-blue.svg" />
+  </a>
+  <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_components">
+    <img alt="runtime" src="https://img.shields.io/badge/runtime-Web%20Components-orange.svg" />
+  </a>
+</p>
 
 OmniCtx 是一个基于 Web Components 的上下文菜单组件库，用于在浏览器环境中快速构建可复用的右键菜单交互。它同时支持声明式标签写法与纯编程式动态调用，适用于固定菜单、运行时菜单以及需要缓存复用的场景。
 
