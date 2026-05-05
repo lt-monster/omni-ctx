@@ -199,6 +199,19 @@ export class ContextMenu extends HTMLElement {
     return this._itemMap.get(id) || null;
   }
 
+  removeItem(id: string): void {
+    const data = this._itemMap.get(id);
+    if (!data) return;
+    this._itemMap.delete(id);
+    const el = this.querySelector(`[data-id="${id}"]`);
+    el?.remove();
+  }
+
+  clearItems(): void {
+    this._itemMap.clear();
+    while (this.firstChild) this.removeChild(this.firstChild);
+  }
+
   private _applySizeConstraints(): void {
     if (!this._menuEl) return;
     ['width', 'max-width', 'height', 'max-height'].forEach((attr) => {

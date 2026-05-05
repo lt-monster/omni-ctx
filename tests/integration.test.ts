@@ -5,6 +5,12 @@ describe('ContextMenu programmatic API', () => {
     const src = require('node:fs').readFileSync(new URL('../src/types.ts', import.meta.url), 'utf8');
     expect(src).toContain('isOpen');
   });
+
+  it('removeItem and clearItems are exported on the type', () => {
+    const src = require('node:fs').readFileSync(new URL('../src/types.ts', import.meta.url), 'utf8');
+    expect(src).toContain('removeItem');
+    expect(src).toContain('clearItems');
+  });
 });
 
 describe('Type Exports', () => {

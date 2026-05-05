@@ -102,6 +102,8 @@ export interface ContextMenuElement extends HTMLElement {
   menuParam: MenuParam | null;
   menuDirection: Extract<MenuDirection, 'right' | 'left'>;
   isOpen: boolean;
+  removeItem(id: string): void;
+  clearItems(): void;
 }
 
 export interface ContextMenuRadioGroupElement extends HTMLElement {
