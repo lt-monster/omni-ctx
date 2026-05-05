@@ -23,10 +23,17 @@ function expectLanguageSwitchBelowBadges(readme: string) {
   expect(firstSectionIndex).toBeGreaterThan(switchRowIndex);
 }
 
-function getPrimaryReadmeHeroAndIntro(readme: string) {
-  const firstSectionIndex = readme.indexOf('## ');
+function getPrimaryReadmeIntro(readme: string) {
+  const switchRowIndex = readme.indexOf('<a href="./README_ZH.md">简体中文</a>');
+  const switchRowEndIndex = switchRowIndex === -1
+    ? -1
+    : readme.indexOf('</p>', switchRowIndex);
+  const introStartIndex = switchRowEndIndex === -1 ? 0 : switchRowEndIndex + '</p>'.length;
+  const firstSectionIndex = readme.indexOf('## ', introStartIndex);
 
-  return firstSectionIndex === -1 ? readme : readme.slice(0, firstSectionIndex);
+  return firstSectionIndex === -1
+    ? readme.slice(introStartIndex).trim()
+    : readme.slice(introStartIndex, firstSectionIndex).trim();
 }
 
 function getSection(readme: string, heading: string) {
@@ -60,12 +67,12 @@ describe('bilingual README language switch', () => {
 
   it('keeps the primary README introduction English-first', () => {
     const readmeEn = readUtf8(readmeEnPath);
-    const heroAndIntro = getPrimaryReadmeHeroAndIntro(readmeEn);
+    const intro = getPrimaryReadmeIntro(readmeEn);
 
-    expect(heroAndIntro).toMatch(/OmniCtx\s+is\b/i);
-    expect(heroAndIntro).toMatch(/context menu/i);
-    expect(heroAndIntro).toMatch(/declarative|programmatic|browser/i);
-    expect(heroAndIntro).not.toMatch(/[\u4e00-\u9fff]/);
+    expect(intro).toMatch(/OmniCtx\s+is\b/i);
+    expect(intro).toMatch(/context menu/i);
+    expect(intro).toMatch(/declarative|programmatic|browser/i);
+    expect(intro).not.toMatch(/[\u4e00-\u9fff]/);
   });
 
   it('shows Chinese installation commands as clear alternatives instead of one chained command', () => {
