@@ -1,6 +1,6 @@
 {
   "name": "omni-ctx",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Zero-dependency Web Component context menu",
   "type": "module",
   "main": "./dist/omni-ctx.js",

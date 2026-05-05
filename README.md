@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./assets/logo/omni-ctx-logo.svg" alt="OmniCtx logo" width="140" />
+  <img src="https://raw.githubusercontent.com/lt-monster/omni-ctx/master/assets/logo/omni-ctx-logo.svg" alt="OmniCtx logo" width="140" />
 </p>
 
 <h1 align="center">OmniCtx</h1>
@@ -8,7 +8,7 @@
   <a href="https://www.npmjs.com/package/omni-ctx">
     <img alt="npm version" src="https://img.shields.io/npm/v/omni-ctx" />
   </a>
-  <a href="./LICENSE">
+  <a href="https://github.com/lt-monster/omni-ctx/blob/master/LICENSE">
     <img alt="license" src="https://img.shields.io/badge/license-MIT-blue.svg" />
   </a>
   <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_components">
