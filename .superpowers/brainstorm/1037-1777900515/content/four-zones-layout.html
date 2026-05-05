@@ -1,0 +1,44 @@
+<h2>测试页右键区域布局方案</h2>
+<p class="subtitle">四块区域整体水平、垂直居中；中间保留间距；左侧亮色 Google / Edge，右侧暗色 Google / Edge；移除右上角固定入口。</p>
+
+<div class="mockup">
+  <div class="mockup-header">Preview: examples/index.html</div>
+  <div class="mockup-body" style="min-height: 560px; display: grid; place-items: center; background: linear-gradient(135deg, #eef2ff 0%, #f8fafc 45%, #111827 45%, #0f172a 100%); border-radius: 12px; padding: 48px;">
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(180px, 240px)); gap: 28px;">
+      <div style="height: 150px; border-radius: 22px; display: grid; place-items: center; text-align: center; background: #fff; color: #202124; box-shadow: 0 14px 34px rgba(60,64,67,.18); border: 1px solid #e8eaed; font-family: Arial, sans-serif;">
+        <div>
+          <div style="font-weight: 700; font-size: 20px; margin-bottom: 8px;">Google Light</div>
+          <div style="font-size: 13px; color: #5f6368;">Right-click here</div>
+        </div>
+      </div>
+      <div style="height: 150px; border-radius: 10px; display: grid; place-items: center; text-align: center; background: #f9fbff; color: #1f2937; box-shadow: 0 12px 28px rgba(0,120,212,.16); border: 1px solid #cfe8ff; font-family: 'Segoe UI', Arial, sans-serif;">
+        <div>
+          <div style="font-weight: 700; font-size: 20px; margin-bottom: 8px; color: #0078d4;">Edge Light</div>
+          <div style="font-size: 13px; color: #4b5563;">Right-click here</div>
+        </div>
+      </div>
+      <div style="height: 150px; border-radius: 22px; display: grid; place-items: center; text-align: center; background: #202124; color: #f8fafd; box-shadow: 0 16px 38px rgba(0,0,0,.38); border: 1px solid #3c4043; font-family: Arial, sans-serif;">
+        <div>
+          <div style="font-weight: 700; font-size: 20px; margin-bottom: 8px;">Google Dark</div>
+          <div style="font-size: 13px; color: #bdc1c6;">Right-click here</div>
+        </div>
+      </div>
+      <div style="height: 150px; border-radius: 10px; display: grid; place-items: center; text-align: center; background: #111827; color: #f9fafb; box-shadow: 0 16px 38px rgba(0,0,0,.42); border: 1px solid #2563eb; font-family: 'Segoe UI', Arial, sans-serif;">
+        <div>
+          <div style="font-weight: 700; font-size: 20px; margin-bottom: 8px; color: #60a5fa;">Edge Dark</div>
+          <div style="font-size: 13px; color: #cbd5e1;">Right-click here</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="options">
+  <div class="option" data-choice="approve" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>按这个布局实现</h3>
+      <p>保留一个居中的 2x2 网格，去掉右上角固定目标。</p>
+    </div>
+  </div>
+</div>
