@@ -107,6 +107,30 @@ describe('ContextMenu open input variants', () => {
   });
 });
 
+describe('ContextMenu function API exports', () => {
+  it('exports openContextMenu from the package entry source', () => {
+    const src = require('node:fs').readFileSync(
+      new URL('../src/index.ts', import.meta.url),
+      'utf8'
+    );
+
+    expect(src).toContain("export { openContextMenu } from './runtime/open-context-menu'");
+  });
+
+  it('exports OpenContextMenuOptions and ContextMenuHandle from the type model', () => {
+    const src = require('node:fs').readFileSync(
+      new URL('../src/types.ts', import.meta.url),
+      'utf8'
+    );
+
+    expect(src).toContain('export interface OpenContextMenuOptions');
+    expect(src).toContain('export interface ContextMenuHandle');
+    expect(src).toContain('cacheKey?: string;');
+    expect(src).toContain('element: ContextMenuElement;');
+    expect(src).toContain('destroy(): void;');
+  });
+});
+
 describe('Theme Engine', () => {
   it('should export getThemeVariables and applyTheme', async () => {
     const mod = await import('../src/themes');

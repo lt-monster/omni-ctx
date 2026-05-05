@@ -6,6 +6,7 @@ export { ContextMenuRadioGroup } from './components/context-menu-radio-group';
 export { ContextMenuRadioItem } from './components/context-menu-radio-item';
 export { ContextMenuOptionItem } from './components/context-menu-option-item';
 export { ContextMenuToggleItem } from './components/context-menu-toggle-item';
+export { openContextMenu } from './runtime/open-context-menu';
 export { calculateMenuPosition } from './utils/position';
 export { handleMenuKeyboard } from './utils/keyboard';
 export { getThemeVariables, applyTheme } from './themes';
@@ -20,6 +21,8 @@ export type {
   MenuItemData,
   MenuOpenConfig,
   MenuOpenInput,
+  OpenContextMenuOptions,
+  ContextMenuHandle,
   MenuSelectEventDetail,
   MenuBeforeCloseEventDetail,
   RadioChangeEventDetail,

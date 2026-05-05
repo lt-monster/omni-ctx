@@ -238,6 +238,7 @@ import 'omni-ctx';
 
 | 函数 | 说明 |
 | --- | --- |
+| `openContextMenu(options)` | 动态创建并打开运行时菜单，无需预先编写 `<context-menu>`，支持 `cacheKey` 复用实例并返回带 `close()` / `destroy()` 的句柄 |
 | `calculateMenuPosition(menu, mouseX, mouseY, vpWidth, vpHeight, submenuCtx?)` | 计算菜单在视口内的最佳显示位置，自动根据边界翻转方向，返回 `{ top, left }` |
 | `handleMenuKeyboard(event, menu, activeEl?)` | 处理菜单的键盘方向键导航（↑↓←→ Enter Escape），返回 `boolean` 表示是否已处理 |
 | `getThemeVariables(style?, theme?, size?)` | 根据风格、主题、尺寸三元组返回对应的 CSS 变量键值对集合 |
@@ -257,6 +258,8 @@ import 'omni-ctx';
 | `MenuItemData` | `addItem()` 的参数结构，包含 `id`、`label`、`icon`、`shortcut`、`disabled`、`checked`、`name`、`value`、`type`、`children`、`handler`、`onChange` 等字段 |
 | `MenuOpenConfig` | `open()` 的配置对象：`{ items, param?, replace? }` |
 | `MenuOpenInput` | `open()` 支持的第二参数联合类型：`MenuParam \| MenuItemData[] \| MenuOpenConfig` |
+| `OpenContextMenuOptions` | 顶层函数 `openContextMenu()` 的参数：`{ x, y, items, param?, cacheKey? }` |
+| `ContextMenuHandle` | `openContextMenu()` 返回句柄：`{ element, close(), destroy() }` |
 | `MenuSelectEventDetail` | `menu-select` 事件的 detail 结构：`{ label, item, menuParam? }` |
 | `MenuBeforeCloseEventDetail` | `before-close` 事件的 detail 结构：`{ reason, cancel }` |
 | `RadioChangeEventDetail` | radio `change` 事件的 detail 结构：`{ name, value, label }` |
@@ -303,6 +306,53 @@ menu.clearItems();
 // 查询菜单是否已打开
 console.log(menu.isOpen); // true | false
 ```
+
+## 🚀 无标签动态打开菜单
+
+如果不想预先编写 `<context-menu>` 标签，可以直接使用顶层函数 `openContextMenu()`。
+
+### 1. 一次性菜单
+
+```ts
+import { openContextMenu } from 'omni-ctx';
+
+openContextMenu({
+  x: 120,
+  y: 200,
+  items: [
+    { label: '打开', icon: '📂', handler: () => console.log('open') },
+    { type: 'separator' },
+    { label: '删除', icon: '🗑️', handler: () => console.log('delete') },
+  ],
+  param: { fileId: 'A-01' },
+});
+```
+
+### 2. 使用 `cacheKey` 复用菜单实例
+
+```ts
+const handle = openContextMenu({
+  cacheKey: 'file-menu',
+  x: 120,
+  y: 200,
+  items: [
+    { label: '打开' },
+    { label: '重命名' },
+    { label: '删除' },
+  ],
+  param: { fileId: 'A-01' },
+});
+
+handle.close();   // 关闭，但保留缓存
+handle.destroy(); // 关闭并销毁缓存实例
+```
+
+### 3. 缓存规则
+
+- 不传 `cacheKey`：按一次性菜单处理，关闭后自动移除
+- 传 `cacheKey`：复用同一个运行时菜单宿主实例
+- 复用时默认会根据本次 `items` 和 `param` 刷新菜单内容
+- 当前缓存的是菜单实例，不是永久冻结的菜单项 DOM
 
 ## 🧠 编程式 `open()` 用法
 

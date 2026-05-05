@@ -41,6 +41,20 @@ export interface MenuOpenConfig {
 
 export type MenuOpenInput = MenuParam | MenuItemData[] | MenuOpenConfig;
 
+export interface OpenContextMenuOptions {
+  x: number;
+  y: number;
+  items: MenuItemData[];
+  param?: MenuParam;
+  cacheKey?: string;
+}
+
+export interface ContextMenuHandle {
+  element: ContextMenuElement;
+  close(): void;
+  destroy(): void;
+}
+
 export interface MenuSelectEventDetail {
   label: string;
   item: HTMLElement;
