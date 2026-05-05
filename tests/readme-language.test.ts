@@ -29,6 +29,18 @@ function getPrimaryReadmeHeroAndIntro(readme: string) {
   return firstSectionIndex === -1 ? readme : readme.slice(0, firstSectionIndex);
 }
 
+function getSection(readme: string, heading: string) {
+  const startIndex = readme.indexOf(heading);
+
+  if (startIndex === -1) return '';
+
+  const nextSectionIndex = readme.indexOf('\n## ', startIndex + heading.length);
+
+  return nextSectionIndex === -1
+    ? readme.slice(startIndex)
+    : readme.slice(startIndex, nextSectionIndex);
+}
+
 describe('bilingual README language switch', () => {
   it('creates the dedicated Chinese README file', () => {
     expect(existsSync(readmeZhPath)).toBe(true);
@@ -54,5 +66,16 @@ describe('bilingual README language switch', () => {
     expect(heroAndIntro).toMatch(/context menu/i);
     expect(heroAndIntro).toMatch(/declarative|programmatic|browser/i);
     expect(heroAndIntro).not.toMatch(/[\u4e00-\u9fff]/);
+  });
+
+  it('shows Chinese installation commands as clear alternatives instead of one chained command', () => {
+    const readmeZh = readUtf8(readmeZhPath);
+    const installSection = getSection(readmeZh, '## 📦 安装');
+
+    expect(installSection).toContain('任选');
+    expect(installSection).toContain('npm install omni-ctx');
+    expect(installSection).toContain('yarn add omni-ctx');
+    expect(installSection).toContain('pnpm add omni-ctx');
+    expect(installSection).not.toContain('npm install omni-ctx && yarn add omni-ctx && pnpm add omni-ctx');
   });
 });

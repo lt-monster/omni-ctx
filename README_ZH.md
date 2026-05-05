@@ -33,8 +33,24 @@ OmniCtx 是一个基于 Web Components 的上下文菜单组件库，用于在�
 
 ## 📦 安装
 
+可任选以下一种包管理器安装：
+
+使用 npm：
+
 ```bash
-npm install omni-ctx && yarn add omni-ctx && pnpm add omni-ctx
+npm install omni-ctx
+```
+
+使用 yarn：
+
+```bash
+yarn add omni-ctx
+```
+
+使用 pnpm：
+
+```bash
+pnpm add omni-ctx
 ```
 
 如果你正在本仓库内进行开发，也可以使用：
