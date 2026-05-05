@@ -183,6 +183,11 @@ export class ContextMenu extends HTMLElement {
         data.onChange?.((event as CustomEvent).detail.value, this._menuParam || undefined);
       });
     }
+    if (data.handler && data.type !== 'option') {
+      el.addEventListener('menu-select', () => {
+        data.handler!(this._menuParam || undefined);
+      });
+    }
     if (data.children) {
       const sub = document.createElement('context-menu');
       data.children.forEach((child) => (sub as any).addItem(child));

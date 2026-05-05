@@ -11,6 +11,16 @@ describe('ContextMenu programmatic API', () => {
     expect(src).toContain('removeItem');
     expect(src).toContain('clearItems');
   });
+
+  it('handler wiring is present in addItem source', () => {
+    const src = require('node:fs').readFileSync(
+      new URL('../src/components/context-menu.ts', import.meta.url), 'utf8'
+    );
+    expect(src).toMatch(/data\.handler/);
+    const handlerIdx = src.indexOf('data.handler');
+    const optionChangeIdx = src.indexOf('option-change');
+    expect(handlerIdx).toBeGreaterThan(optionChangeIdx);
+  });
 });
 
 describe('Type Exports', () => {
