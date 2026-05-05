@@ -3,11 +3,11 @@
   "version": "1.0.1",
   "description": "Zero-dependency Web Component context menu",
   "type": "module",
-  "main": "./dist/omni-ctx.js",
+  "main": "./dist/omni-ctx.min.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/omni-ctx.js",
+      "import": "./dist/omni-ctx.min.js",
       "types": "./dist/index.d.ts"
     }
   },

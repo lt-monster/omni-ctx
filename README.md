@@ -78,7 +78,7 @@ bun install
 
 ```html
 <script type="module">
-  import { openContextMenu } from './dist/omni-ctx.js';
+  import { openContextMenu } from './dist/omni-ctx.min.js';
 
   document.addEventListener('contextmenu', (event) => {
     event.preventDefault();
@@ -98,7 +98,7 @@ bun install
 #### 普通 `script` 方式
 
 ```html
-<script src="./dist/omni-ctx.global.js"></script>
+<script src="./dist/omni-ctx.global.min.js"></script>
 <script>
   document.addEventListener('contextmenu', function (event) {
     event.preventDefault();
@@ -119,6 +119,8 @@ bun install
 
 - 模块方式使用包名 `omni-ctx` 或对应的 ESM 构建文件
 - 普通 `script` 方式通过全局对象 `OmniCtx` 访问运行时 API
+- 生产环境推荐使用 `dist/omni-ctx.min.js` 或 `dist/omni-ctx.global.min.js`
+- 调试时可使用未压缩的 `dist/omni-ctx.js` 或 `dist/omni-ctx.global.js`
 - 如果只使用声明式标签，加载全局构建后也可以在普通 `script` 中直接操作菜单实例
 - 不传 `cacheKey` 时，菜单会按一次性实例创建并在关闭后移除
 - 传入 `cacheKey` 时，可复用同一个运行时菜单实例，适合高频触发场景
