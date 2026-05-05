@@ -157,6 +157,40 @@ export const radioItemStyles = `
   .ctx-menu-radio-item__label { flex: 1; }
 `;
 
+export const optionItemStyles = `
+  :host { display: block; cursor: pointer; }
+  .ctx-menu-option-item {
+    display: flex;
+    align-items: center;
+    padding: var(--ctx-menu-item-padding, 6px 12px);
+    gap: 8px;
+    white-space: nowrap;
+  }
+  .ctx-menu-option-item:hover {
+    background: var(--ctx-menu-item-hover-bg, #f0f4ff);
+    color: var(--ctx-menu-item-hover-text, #1a56db);
+  }
+  .ctx-menu-option-item--disabled {
+    opacity: var(--ctx-menu-item-disabled-opacity, 0.4);
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+  .ctx-menu-option-item__mark {
+    width: var(--ctx-menu-item-icon-size, 16px);
+    flex-shrink: 0;
+    text-align: center;
+    color: var(--ctx-menu-option-checked-color, var(--ctx-menu-radio-checked-color, #1a56db));
+    font-size: calc(var(--ctx-menu-item-icon-size, 16px) * 0.62);
+    line-height: 1;
+  }
+  .ctx-menu-option-item__label {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+`;
+
 export const toggleItemStyles = `
   :host { display: block; cursor: pointer; }
   .ctx-menu-toggle-item {

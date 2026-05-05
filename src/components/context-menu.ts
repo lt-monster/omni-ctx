@@ -2,7 +2,16 @@ import { menuBaseStyles, overlayStyles } from '../styles';
 import { calculateMenuPosition } from '../utils/position';
 import { handleMenuKeyboard } from '../utils/keyboard';
 import { applyTheme } from '../themes';
-import type { MenuParam, MenuStyle, MenuTheme, MenuSize, MenuItemData, MenuDirection } from '../types';
+import type {
+  MenuParam,
+  MenuStyle,
+  MenuTheme,
+  MenuSize,
+  MenuItemData,
+  MenuDirection,
+  MenuOpenInput,
+  MenuOpenConfig,
+} from '../types';
 
 const TEMPLATE = document.createElement('template');
 TEMPLATE.innerHTML = `
@@ -14,6 +23,14 @@ TEMPLATE.innerHTML = `
     <slot name="footer"></slot>
   </div>
 `;
+
+const PROGRAMMATIC_ATTR = 'data-programmatic';
+
+interface NormalizedOpenInput {
+  param: MenuParam | null;
+  items: MenuItemData[] | null;
+  replace: boolean;
+}
 
 export class ContextMenu extends HTMLElement {
   static get observedAttributes() {
@@ -78,8 +95,15 @@ export class ContextMenu extends HTMLElement {
     }
   }
 
-  open(event: MouseEvent | { x: number; y: number }, param?: MenuParam): void {
-    this._menuParam = param || null;
+  open(event: MouseEvent | { x: number; y: number }, input?: MenuOpenInput): void {
+    const normalized = this._normalizeOpenInput(input);
+    this._menuParam = normalized.param;
+
+    if (normalized.items) {
+      if (normalized.replace) this._clearProgrammaticItems();
+      this._renderProgrammaticItems(normalized.items);
+    }
+
     if ('clientX' in event) {
       this.show(event.clientX, event.clientY);
     } else {
@@ -161,39 +185,8 @@ export class ContextMenu extends HTMLElement {
   }
 
   addItem(data: MenuItemData): void {
-    if (data.type === 'separator') {
-      this.addSeparator();
-      return;
-    }
-
-    const el = document.createElement(
-      data.type === 'option' ? 'context-menu-option-item' : 'context-menu-item',
-    );
-    const label = typeof data.label === 'function' ? data.label(this._menuParam || undefined) : data.label;
-    el.setAttribute('label', label);
-    if (data.id) { el.setAttribute('data-id', data.id); this._itemMap.set(data.id, data); }
-    if (data.name) el.setAttribute('name', data.name);
-    if (data.value) el.setAttribute('value', data.value);
-    if (data.icon) el.setAttribute('icon', data.icon);
-    if (data.shortcut) el.setAttribute('shortcut', data.shortcut);
-    if (data.disabled) el.setAttribute('disabled', '');
-    if (data.checked) el.setAttribute('checked', '');
-    if (data.type === 'option' && data.onChange) {
-      el.addEventListener('option-change', (event) => {
-        data.onChange?.((event as CustomEvent).detail.value, this._menuParam || undefined);
-      });
-    }
-    if (data.handler && data.type !== 'option') {
-      el.addEventListener('menu-select', () => {
-        data.handler!(this._menuParam || undefined);
-      });
-    }
-    if (data.children) {
-      const sub = document.createElement('context-menu');
-      data.children.forEach((child) => (sub as any).addItem(child));
-      el.appendChild(sub);
-    }
-    this.appendChild(el);
+    const el = this._createItemElement(data);
+    if (el) this.appendChild(el);
   }
 
   addSeparator(): void {
@@ -215,6 +208,96 @@ export class ContextMenu extends HTMLElement {
   clearItems(): void {
     this._itemMap.clear();
     while (this.firstChild) this.removeChild(this.firstChild);
+  }
+
+  private _createItemElement(data: MenuItemData): HTMLElement | null {
+    if (data.type === 'separator') {
+      return document.createElement('context-menu-separator');
+    }
+
+    const el = document.createElement(
+      data.type === 'option' ? 'context-menu-option-item' : 'context-menu-item',
+    );
+    const label = typeof data.label === 'function' ? data.label(this._menuParam || undefined) : data.label;
+    el.setAttribute('label', label);
+    if (data.id) {
+      el.setAttribute('data-id', data.id);
+      this._itemMap.set(data.id, data);
+    }
+    if (data.name) el.setAttribute('name', data.name);
+    if (data.value) el.setAttribute('value', data.value);
+    if (data.icon) el.setAttribute('icon', data.icon);
+    if (data.shortcut) el.setAttribute('shortcut', data.shortcut);
+    if (data.disabled) el.setAttribute('disabled', '');
+    if (data.checked) el.setAttribute('checked', '');
+    if (data.type === 'option' && data.onChange) {
+      el.addEventListener('option-change', (event) => {
+        data.onChange?.((event as CustomEvent).detail.value, this._menuParam || undefined);
+      });
+    }
+    if (data.handler && data.type !== 'option') {
+      el.addEventListener('menu-select', () => {
+        data.handler!(this._menuParam || undefined);
+      });
+    }
+    if (data.children?.length) {
+      const sub = document.createElement('context-menu') as ContextMenu;
+      data.children.forEach((child) => {
+        const childEl = sub._createItemElement(child);
+        if (!childEl) return;
+        childEl.setAttribute(PROGRAMMATIC_ATTR, 'true');
+        sub.appendChild(childEl);
+      });
+      el.appendChild(sub);
+    }
+
+    return el;
+  }
+
+  private _renderProgrammaticItems(items: MenuItemData[]): void {
+    items.forEach((item) => {
+      const el = this._createItemElement(item);
+      if (!el) return;
+      el.setAttribute(PROGRAMMATIC_ATTR, 'true');
+      this.appendChild(el);
+    });
+  }
+
+  private _clearProgrammaticItems(): void {
+    this.querySelectorAll(`:scope > [${PROGRAMMATIC_ATTR}="true"]`).forEach((node) => {
+      const id = node.getAttribute('data-id');
+      if (id) this._itemMap.delete(id);
+      node.remove();
+    });
+  }
+
+  private _normalizeOpenInput(input?: MenuOpenInput): NormalizedOpenInput {
+    if (input == null) {
+      return { param: null, items: null, replace: true };
+    }
+
+    if (Array.isArray(input)) {
+      return {
+        param: null,
+        items: input,
+        replace: true,
+      };
+    }
+
+    if (typeof input === 'object' && input !== null && 'items' in input) {
+      const config = input as MenuOpenConfig;
+      return {
+        param: config.param || null,
+        items: config.items,
+        replace: config.replace ?? true,
+      };
+    }
+
+    return {
+      param: input as MenuParam,
+      items: null,
+      replace: true,
+    };
   }
 
   private _applySizeConstraints(): void {

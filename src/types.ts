@@ -33,6 +33,14 @@ export interface MenuItemData {
   type?: 'menu' | 'radio' | 'toggle' | 'separator' | 'option';
 }
 
+export interface MenuOpenConfig {
+  items: MenuItemData[];
+  param?: MenuParam;
+  replace?: boolean;
+}
+
+export type MenuOpenInput = MenuParam | MenuItemData[] | MenuOpenConfig;
+
 export interface MenuSelectEventDetail {
   label: string;
   item: HTMLElement;
@@ -92,7 +100,7 @@ export interface ContextMenuElement extends HTMLElement {
     parentRect: { top: number; left: number; width: number; height: number },
     preferredDirection?: Extract<MenuDirection, 'right' | 'left'>,
   ): void;
-  open(event: MouseEvent | { x: number; y: number }, param?: MenuParam): void;
+  open(event: MouseEvent | { x: number; y: number }, input?: MenuOpenInput): void;
   hide(): void;
   close(): void;
   focusFirstItem(): void;
