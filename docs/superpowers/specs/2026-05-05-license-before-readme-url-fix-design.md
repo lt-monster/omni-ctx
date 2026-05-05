@@ -1,4 +1,4 @@
-# License Before README URL Fix Design
+# License And README URL Fix Design
 
 ## Background
 
@@ -10,40 +10,46 @@ The root cause is already identified:
 - the npm package only publishes `dist/` plus package metadata
 - the SVG file is not included in the published package
 
-The user selected the strategy of using absolute repository URLs for README assets in the future, but the repository URL is not available yet.
+The user selected the strategy of using absolute repository URLs for README assets and has now provided the repository URL:
 
-The user also requested that the repository add a root-level MIT license file now.
+- `https://github.com/lt-monster/omni-ctx`
+
+The user also requested that the repository add a root-level MIT license file.
 
 ## Goals
 
 - Add a standard MIT `LICENSE` file at the repository root.
-- Keep the current README unchanged for now.
-- Defer the README absolute URL fix until the repository URL is provided.
-- Avoid publishing a partial npm fix that still leaves the logo broken.
+- Replace the README logo path with an absolute repository URL.
+- Replace the README license link with an absolute repository URL.
+- Make the README render correctly on npm after a follow-up patch release.
 
 ## Non-Goals
 
-- Do not guess or fabricate a repository URL.
-- Do not publish a new npm version yet.
-- Do not change the current README image/link targets until the real repository URL is known.
+- Do not keep using relative README asset URLs for npm-facing content.
+- Do not guess any branch name other than the one currently used by the repository.
 
 ## Chosen Approach
 
-Implement only the part that is fully deterministic now:
+Implement the full npm README fix now:
 
 - create `LICENSE` with standard MIT text
+- change the README logo image source to an absolute GitHub raw URL
+- change the README license link to an absolute GitHub URL
 
-Do not yet:
+Use these repository targets:
 
-- replace logo URL in `README.md`
-- replace `LICENSE` link target in `README.md`
-- publish a new npm version
+- logo image source:
+  - `https://raw.githubusercontent.com/lt-monster/omni-ctx/master/assets/logo/omni-ctx-logo.svg`
+- license link:
+  - `https://github.com/lt-monster/omni-ctx/blob/master/LICENSE`
 
 ## Rationale
 
-This keeps the repository legally and structurally correct without introducing placeholder links that would need another correction.
+This fixes the actual npm rendering issue at the source:
 
-Publishing now would not solve the actual npm README logo issue, because that issue depends on the final repository URL.
+- npm can load the logo from a public absolute URL
+- the license link no longer points to a file that is absent from the published tarball
+- the repository also gains a proper root-level MIT license file
 
 ## Implementation Scope
 
@@ -51,19 +57,17 @@ Publishing now would not solve the actual npm README logo issue, because that is
 
 - `LICENSE`
 
-### Leave unchanged for now
+### Modify
 
 - `README.md`
-- `package.json`
-- npm package version
 
 ## Future Follow-Up
 
-Once the repository URL is available, perform a second small change set:
+After the repository fix is merged:
 
-1. replace the logo `src` in `README.md` with an absolute repository URL
-2. replace the `LICENSE` link in `README.md` with an absolute repository URL
-3. release a new patch version to npm
+1. bump the package version with a patch release
+2. publish the updated package to npm
+3. verify npm package page renders the logo correctly
 
 ## Verification
 
@@ -71,14 +75,19 @@ For this current change:
 
 - verify `LICENSE` exists at repository root
 - verify the file contains standard MIT license text
+- verify `README.md` references the new absolute logo URL
+- verify `README.md` references the new absolute license URL
 
-For the later follow-up:
+For the npm follow-up:
 
 - verify npm README renders the logo correctly
 - verify the license link resolves correctly from npm
 
 ## Final Recommendation
 
-Proceed now with a root-level MIT `LICENSE` only.
+Proceed with:
 
-Wait for the repository URL before making README asset-link changes or publishing a new npm version.
+- adding the root-level MIT `LICENSE`
+- updating `README.md` to use repository absolute URLs
+
+Then publish a patch version to npm so the package page picks up the corrected README.
