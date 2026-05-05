@@ -20,8 +20,12 @@ describe('global browser build source', () => {
   it('build script emits both esm and global browser outputs', () => {
     const source = readFileSync(buildScriptPath, 'utf8');
     expect(source).toContain("resolve(distDir, 'omni-ctx.js')");
+    expect(source).toContain("resolve(distDir, 'omni-ctx.min.js')");
     expect(source).toContain("resolve(distDir, 'omni-ctx.global.js')");
+    expect(source).toContain("resolve(distDir, 'omni-ctx.global.min.js')");
     expect(source).toContain("entrypoints: [resolve(root, 'src/index.ts')]");
     expect(source).toContain("entrypoints: [resolve(root, 'src/global.ts')]");
+    expect(source).toContain('minify: false');
+    expect(source).toContain('minify: true');
   });
 });
