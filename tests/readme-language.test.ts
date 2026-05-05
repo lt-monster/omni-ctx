@@ -4,29 +4,55 @@ import { existsSync, readFileSync } from 'node:fs';
 const readmeEnPath = new URL('../README.md', import.meta.url);
 const readmeZhPath = new URL('../README_ZH.md', import.meta.url);
 
+function readUtf8(url: URL) {
+  return readFileSync(url, 'utf8');
+}
+
+function expectLanguageSwitchLinks(readme: string) {
+  expect(readme).toContain('<a href="./README.md">English</a>');
+  expect(readme).toContain('<a href="./README_ZH.md">简体中文</a>');
+}
+
+function expectLanguageSwitchBelowBadges(readme: string) {
+  const badgeRowIndex = readme.indexOf('img.shields.io/npm/v/omni-ctx');
+  const switchRowIndex = readme.indexOf('<a href="./README_ZH.md">简体中文</a>');
+  const firstSectionIndex = readme.indexOf('## ');
+
+  expect(badgeRowIndex).toBeGreaterThanOrEqual(0);
+  expect(switchRowIndex).toBeGreaterThan(badgeRowIndex);
+  expect(firstSectionIndex).toBeGreaterThan(switchRowIndex);
+}
+
+function getPrimaryReadmeHeroAndIntro(readme: string) {
+  const firstSectionIndex = readme.indexOf('## ');
+
+  return firstSectionIndex === -1 ? readme : readme.slice(0, firstSectionIndex);
+}
+
 describe('bilingual README language switch', () => {
-  it('creates the Chinese README file', () => {
+  it('creates the dedicated Chinese README file', () => {
     expect(existsSync(readmeZhPath)).toBe(true);
   });
 
-  it('adds a bidirectional language switch below the badges', () => {
-    const readmeEn = readFileSync(readmeEnPath, 'utf8');
-    const readmeZh = readFileSync(readmeZhPath, 'utf8');
+  it('includes bidirectional language switch links in both READMEs, below the badge row', () => {
+    expect(existsSync(readmeZhPath)).toBe(true);
 
-    expect(readmeEn).toContain('<a href="./README.md">English</a>');
-    expect(readmeEn).toContain('<a href="./README_ZH.md">简体中文</a>');
-    expect(readmeZh).toContain('<a href="./README.md">English</a>');
-    expect(readmeZh).toContain('<a href="./README_ZH.md">简体中文</a>');
+    const readmeEn = readUtf8(readmeEnPath);
+    const readmeZh = readUtf8(readmeZhPath);
+
+    expectLanguageSwitchLinks(readmeEn);
+    expectLanguageSwitchLinks(readmeZh);
+    expectLanguageSwitchBelowBadges(readmeEn);
+    expectLanguageSwitchBelowBadges(readmeZh);
   });
 
-  it('uses English introductory wording in the primary README', () => {
-    const readmeEn = readFileSync(readmeEnPath, 'utf8');
+  it('keeps the primary README introduction English-first', () => {
+    const readmeEn = readUtf8(readmeEnPath);
+    const heroAndIntro = getPrimaryReadmeHeroAndIntro(readmeEn);
 
-    expect(readmeEn).toContain(
-      'OmniCtx is a Web Components-based context menu library',
-    );
-    expect(readmeEn).not.toContain(
-      'OmniCtx 是一个基于 Web Components 的上下文菜单组件库',
-    );
+    expect(heroAndIntro).toMatch(/OmniCtx\s+is\b/i);
+    expect(heroAndIntro).toMatch(/context menu/i);
+    expect(heroAndIntro).toMatch(/declarative|programmatic|browser/i);
+    expect(heroAndIntro).not.toMatch(/[\u4e00-\u9fff]/);
   });
 });
