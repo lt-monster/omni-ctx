@@ -143,8 +143,29 @@
   <context-menu id="google-light-menu" style-type="google" theme="light" size="normal" max-height="260">
     <div slot="header" style="padding:8px 12px;font-size:12px;color:#888;border-bottom:1px solid #eee;">File Operations</div>
 
-    <context-menu-item label="Open" icon="📂" shortcut="Ctrl+O"></context-menu-item>
+    <context-menu-item label="Open" icon="📂" shortcut="Ctrl+O" icon-size="12px"></context-menu-item>
     <context-menu-item label="Save" icon="💾" shortcut="Ctrl+S"></context-menu-item>
+    <context-menu-item label="Brand Asset" icon-size="18px">
+      <svg
+        slot="icon"
+        viewBox="0 0 16 16"
+        width="16"
+        height="16"
+        aria-hidden="true"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M8 1.25 14 4.6v6.8L8 14.75 2 11.4V4.6L8 1.25Z"
+          fill="currentColor"
+          opacity="0.18"
+        />
+        <path
+          d="M8 1.25 14 4.6v6.8L8 14.75 2 11.4V4.6L8 1.25Zm0 1.44L3.25 5.35v5.3L8 13.31l4.75-2.66v-5.3L8 2.69Z"
+          fill="currentColor"
+        />
+        <path d="M8 4.9 10.8 6.5V9.7L8 11.3 5.2 9.7V6.5L8 4.9Z" fill="currentColor" />
+      </svg>
+    </context-menu-item>
 
     <context-menu-separator></context-menu-separator>
 

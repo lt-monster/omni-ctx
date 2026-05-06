@@ -57,7 +57,14 @@ This approach is a good fit when the menu structure is relatively stable and you
 <div id="target">Right-click here</div>
 
 <context-menu id="menu">
-  <context-menu-item label="Open"></context-menu-item>
+  <context-menu-item label="Open" icon="📂"></context-menu-item>
+  <context-menu-item label="Brand Asset" icon-size="18px">
+    <svg slot="icon" viewBox="0 0 16 16" aria-hidden="true">
+      <path d="M8 1.25 14 4.6v6.8L8 14.75 2 11.4V4.6L8 1.25Z" fill="currentColor" opacity="0.18" />
+      <path d="M8 1.25 14 4.6v6.8L8 14.75 2 11.4V4.6L8 1.25Zm0 1.44L3.25 5.35v5.3L8 13.31l4.75-2.66v-5.3L8 2.69Z" fill="currentColor" />
+      <path d="M8 4.9 10.8 6.5V9.7L8 11.3 5.2 9.7V6.5L8 4.9Z" fill="currentColor" />
+    </svg>
+  </context-menu-item>
   <context-menu-item label="Delete"></context-menu-item>
 </context-menu>
 
@@ -78,6 +85,8 @@ Notes:
 
 - Built on native Custom Elements, with no dependency on any specific frontend framework
 - Well suited for declaring and maintaining menu content directly in the page structure
+- `icon` continues to support emoji and text icons, while `slot="icon"` can render custom SVG or other nodes
+- `icon-size` lets you override the icon box size per item with any valid CSS size value
 
 ### 2. Dynamic usage
 

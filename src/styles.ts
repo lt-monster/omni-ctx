@@ -105,6 +105,26 @@ export const menuItemStyles = `
     font-size: var(--_item-icon-size);
   }
 
+  .ctx-menu-item__icon-text {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    line-height: 1;
+  }
+
+  .ctx-menu-item__icon ::slotted(*) {
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  .ctx-menu-item__icon ::slotted(svg),
+  .ctx-menu-item__icon ::slotted(img) {
+    width: 100%;
+    height: 100%;
+  }
+
   .ctx-menu-item__label {
     flex: 1;
     min-width: 0;

@@ -5,7 +5,10 @@ const TEMPLATE = document.createElement('template');
 TEMPLATE.innerHTML = `
   <style>${menuItemStyles}</style>
   <div class="ctx-menu-item" part="item">
-    <span class="ctx-menu-item__icon" part="icon"></span>
+    <span class="ctx-menu-item__icon" part="icon">
+      <span class="ctx-menu-item__icon-text"></span>
+      <slot name="icon"></slot>
+    </span>
     <span class="ctx-menu-item__label" part="label"></span>
     <span class="ctx-menu-item__shortcut" part="shortcut"></span>
     <span class="ctx-menu-item__arrow" part="arrow"></span>
@@ -15,7 +18,7 @@ TEMPLATE.innerHTML = `
 
 export class ContextMenuItem extends HTMLElement {
   static get observedAttributes() {
-    return ['label', 'icon', 'shortcut', 'disabled', 'visible', 'expand-trigger'];
+    return ['label', 'icon', 'icon-size', 'shortcut', 'disabled', 'visible', 'expand-trigger'];
   }
 
   private _submenu: HTMLElement | null = null;
@@ -35,6 +38,7 @@ export class ContextMenuItem extends HTMLElement {
     this.addEventListener('click', this._handleClick);
     this.addEventListener('mouseenter', this._handleMouseEnter);
     this.addEventListener('mouseleave', this._handleMouseLeave);
+    this.shadowRoot?.querySelector('slot[name="icon"]')?.addEventListener('slotchange', this._handleIconSlotChange);
     this._findSubmenu();
     this._updateRendering();
   }
@@ -43,11 +47,12 @@ export class ContextMenuItem extends HTMLElement {
     this.removeEventListener('click', this._handleClick);
     this.removeEventListener('mouseenter', this._handleMouseEnter);
     this.removeEventListener('mouseleave', this._handleMouseLeave);
+    this.shadowRoot?.querySelector('slot[name="icon"]')?.removeEventListener('slotchange', this._handleIconSlotChange);
     this._clearTimers();
   }
 
   attributeChangedCallback(name: string, _old: string | null, _new: string | null) {
-    if (['label', 'icon', 'shortcut', 'disabled', 'visible', 'expand-trigger'].includes(name)) {
+    if (['label', 'icon', 'icon-size', 'shortcut', 'disabled', 'visible', 'expand-trigger'].includes(name)) {
       this._updateRendering();
     }
   }
@@ -141,6 +146,10 @@ export class ContextMenuItem extends HTMLElement {
     }, 150);
   };
 
+  private _handleIconSlotChange = () => {
+    this._updateRendering();
+  };
+
   private _toggleSubmenu(): void {
     if (!this._submenu) return;
     const subInner = this._submenu.shadowRoot?.querySelector('.ctx-menu');
@@ -184,20 +193,35 @@ export class ContextMenuItem extends HTMLElement {
 
     const inner = this.shadowRoot.querySelector('.ctx-menu-item');
     const iconEl = this.shadowRoot.querySelector('.ctx-menu-item__icon') as HTMLElement;
+    const iconTextEl = this.shadowRoot.querySelector('.ctx-menu-item__icon-text') as HTMLElement;
+    const iconSlot = this.shadowRoot.querySelector('slot[name="icon"]') as HTMLSlotElement;
     const labelEl = this.shadowRoot.querySelector('.ctx-menu-item__label') as HTMLElement;
     const shortcutEl = this.shadowRoot.querySelector('.ctx-menu-item__shortcut') as HTMLElement;
     const arrowEl = this.shadowRoot.querySelector('.ctx-menu-item__arrow') as HTMLElement;
 
-    if (!inner || !iconEl || !labelEl || !shortcutEl || !arrowEl) return;
+    if (!inner || !iconEl || !iconTextEl || !iconSlot || !labelEl || !shortcutEl || !arrowEl) return;
 
     const visibleAttr = this.getAttribute('visible');
     this._visible = visibleAttr !== 'false';
 
+    const iconSize = this.getAttribute('icon-size');
+    if (iconSize) {
+      this.style.setProperty('--_item-icon-size', iconSize);
+    } else {
+      this.style.removeProperty('--_item-icon-size');
+    }
+
     this.style.display = this._visible ? '' : 'none';
 
+    const icon = this.getAttribute('icon') || '';
+    const hasSlottedIcon = iconSlot.assignedNodes({ flatten: true }).some((node) => {
+      return !(node.nodeType === Node.TEXT_NODE && !node.textContent?.trim());
+    });
+
     labelEl.textContent = this.getAttribute('label') || '';
-    iconEl.textContent = this.getAttribute('icon') || '';
-    iconEl.style.display = this.hasAttribute('icon') ? '' : 'none';
+    iconTextEl.textContent = hasSlottedIcon ? '' : icon;
+    iconTextEl.style.display = hasSlottedIcon ? 'none' : icon ? '' : 'none';
+    iconEl.style.display = hasSlottedIcon || icon ? '' : 'none';
     shortcutEl.textContent = this.getAttribute('shortcut') || '';
     shortcutEl.style.display = this.hasAttribute('shortcut') ? '' : 'none';
     arrowEl.textContent = '▶';

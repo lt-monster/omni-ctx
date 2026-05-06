@@ -57,7 +57,14 @@ bun install
 <div id="target">右键点击这里</div>
 
 <context-menu id="menu">
-  <context-menu-item label="打开"></context-menu-item>
+  <context-menu-item label="打开" icon="📂"></context-menu-item>
+  <context-menu-item label="品牌资源" icon-size="18px">
+    <svg slot="icon" viewBox="0 0 16 16" aria-hidden="true">
+      <path d="M8 1.25 14 4.6v6.8L8 14.75 2 11.4V4.6L8 1.25Z" fill="currentColor" opacity="0.18" />
+      <path d="M8 1.25 14 4.6v6.8L8 14.75 2 11.4V4.6L8 1.25Zm0 1.44L3.25 5.35v5.3L8 13.31l4.75-2.66v-5.3L8 2.69Z" fill="currentColor" />
+      <path d="M8 4.9 10.8 6.5V9.7L8 11.3 5.2 9.7V6.5L8 4.9Z" fill="currentColor" />
+    </svg>
+  </context-menu-item>
   <context-menu-item label="删除"></context-menu-item>
 </context-menu>
 
@@ -78,6 +85,8 @@ bun install
 
 - 基于原生 Custom Elements 实现，无需依赖特定前端框架
 - 适合在页面结构中直接声明和维护菜单内容
+- `icon` 继续支持 emoji 和文本图标，`slot="icon"` 可用于渲染自定义 SVG 或其他节点
+- `icon-size` 可为单个菜单项覆盖图标区域尺寸，接受任意合法 CSS 尺寸值
 
 ### 2. 动态使用
 
