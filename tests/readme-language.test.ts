@@ -17,10 +17,13 @@ function expectLanguageSwitchBelowBadges(readme: string) {
   const badgeRowIndex = readme.indexOf('img.shields.io/npm/v/omni-ctx');
   const switchRowIndex = readme.indexOf('<a href="./README_ZH.md">简体中文</a>');
   const firstSectionIndex = readme.indexOf('## ');
+  const centeredLanguageSwitchPattern =
+    /<p align="center">\s*<a href="\.\/README\.md">English<\/a>\s*\|\s*<a href="\.\/README_ZH\.md">简体中文<\/a>\s*<\/p>/;
 
   expect(badgeRowIndex).toBeGreaterThanOrEqual(0);
   expect(switchRowIndex).toBeGreaterThan(badgeRowIndex);
   expect(firstSectionIndex).toBeGreaterThan(switchRowIndex);
+  expect(readme).toMatch(centeredLanguageSwitchPattern);
 }
 
 function getPrimaryReadmeIntro(readme: string) {
