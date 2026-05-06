@@ -23,6 +23,11 @@
 
 OmniCtx is a Web Components-based context menu library for building reusable right-click interactions in the browser. It supports both declarative markup and fully programmatic usage, making it suitable for fixed menus, runtime-generated menus, and cacheable menu instances.
 
+Current stable release: `v1.1.0`
+
+- Release notes: [`docs/releases/v1.1.0.md`](./docs/releases/v1.1.0.md)
+- npm package: [`omni-ctx@1.1.0`](https://www.npmjs.com/package/omni-ctx)
+
 ## ✨ Features
 
 - Supports both declarative usage and fully programmatic dynamic usage

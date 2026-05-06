@@ -23,6 +23,11 @@
 
 OmniCtx 是一个基于 Web Components 的上下文菜单组件库，用于在浏览器环境中快速构建可复用的右键菜单交互。它同时支持声明式标签写法与纯编程式动态调用，适用于固定菜单、运行时菜单以及需要缓存复用的场景。
 
+当前稳定版本：`v1.1.0`
+
+- Release Note：[`docs/releases/v1.1.0.md`](./docs/releases/v1.1.0.md)
+- npm 包：[`omni-ctx@1.1.0`](https://www.npmjs.com/package/omni-ctx)
+
 ## ✨ 功能特性
 
 - 支持声明式使用与纯编程式动态使用
