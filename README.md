@@ -35,21 +35,9 @@ OmniCtx is a Web Components-based context menu library for building reusable rig
 
 Choose any one of the following package managers:
 
-Using npm:
-
 ```bash
 npm install omni-ctx
-```
-
-Using yarn:
-
-```bash
 yarn add omni-ctx
-```
-
-Using pnpm:
-
-```bash
 pnpm add omni-ctx
 ```
 
